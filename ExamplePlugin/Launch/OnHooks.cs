@@ -17,9 +17,12 @@ namespace HedgehogUtils.Launch
         }
         private static void DontDieWhileLaunched(On.RoR2.CharacterDeathBehavior.orig_OnDeath orig, CharacterDeathBehavior self)
         {
-            if (self.gameObject.GetComponent<CharacterBody>().HasBuff(Buffs.launchedBuff))
+            if (self.gameObject.TryGetComponent<CharacterBody>(out CharacterBody body))
             {
-                return;
+                if (body.HasBuff(Buffs.launchedBuff))
+                {
+                    return;
+                }
             }
             orig(self);
         }

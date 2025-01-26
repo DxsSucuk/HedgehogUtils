@@ -14,13 +14,11 @@ namespace HedgehogUtils.Boost.EntityStates
         public const float minDuration = 0.4f;
         public const float minAirBoostDuration = 0.2f;
         public const float maxAirBoostDuration = 0.4f;
-        
-        public static float boostMeterDrain = 0.88f;
+
+        public static float boostStartMeterDrain = 20f;
+        public static float boostMeterDrain = 0.6f;
         public static float screenShake = 3.5f;
         public static float airBoostY = 8;
-
-        public static string boostSoundString = "Play_boost";
-        public static string boostChangeSoundString = "Play_boost_change";
 
         protected Vector3 targetDirection;
         public BoostLogic boostLogic;
@@ -44,7 +42,10 @@ namespace HedgehogUtils.Boost.EntityStates
 
         protected bool drainBoostMeter = true;
 
-        protected BuffDef buff;
+        protected virtual BuffDef buff
+        {
+            get { return null; }
+        }
 
         protected float maxRadiansTurnPerSecond = 3f;
 
@@ -61,19 +62,24 @@ namespace HedgehogUtils.Boost.EntityStates
             boostLogic = GetComponent<BoostLogic>();
             if (NetworkServer.active)
             {
-                if (buff == null) { Log.Error($"Boost state of type \"{this.GetType()}\" does not have a buff defined. Make sure to define the buff BEFORE base.OnEnter()"); }
+                if (buff == null) { Log.Error($"Boost state of type \"{this.GetType()}\" does not have a buff defined. Override the property \"buff\" to assign your own buff"); }
                 else { base.characterBody.AddBuff(buff); }
                 base.characterBody.AddTimedBuff(RoR2Content.Buffs.HiddenInvincibility, 0.25f);
             }
 
+            if (drainBoostMeter)
+            {
+                boostLogic.InstantChangeBoostMeter(-(boostStartMeterDrain * characterBody.skillLocator.utility.cooldownScale));
+            }
+
             if (airBoosting)
             {
-                base.PlayCrossfade("Body", "AirBoost", "Roll.playbackRate", minAirBoostDuration, minAirBoostDuration / 3f);
+                PlayAirBoostAnimation();
                 base.skillLocator.utility.DeductStock(1);
             }
             else
             {
-                base.PlayCrossfade("Body", "Boost", 0.1f);
+                PlayBoostAnimation();
             }
 
             if (base.inputBank.moveVector != Vector3.zero)
@@ -102,6 +108,7 @@ namespace HedgehogUtils.Boost.EntityStates
                 if (NetworkServer.active)
                 {
                     boostLogic.RemoveBoost(boostMeterDrain);
+                    boostLogic.boostMeterDrain = boostMeterDrain;
                 }
                 boostLogic.boostDraining = true;
             }
@@ -133,13 +140,25 @@ namespace HedgehogUtils.Boost.EntityStates
             }
             else if (base.isAuthority && base.fixedAge > minDuration && !base.inputBank.skill3.down)
             {
-                outer.SetNextStateToMain();
+                SetNextState();
+                return;
+            }
+
+            if (base.isAuthority && inputBank.moveVector == Vector3.zero && !airBoosting && base.fixedAge > minDuration)
+            {
+                SetNextState();
+                return;
+            }
+
+            if (base.isAuthority && Vector3.Dot(inputBank.moveVector, targetDirection) < 0.1f && base.fixedAge > minDuration)
+            {
+                SetNextState();
                 return;
             }
 
             if (base.isAuthority && (boostLogic.boostMeter <= 0 || !boostLogic.boostAvailable))
             {
-                this.outer.SetNextStateToMain();
+                SetNextState();
                 return;
             }
         }
@@ -227,6 +246,33 @@ namespace HedgehogUtils.Boost.EntityStates
             }
         }
 
+        public virtual void SetNextState()
+        {
+            if (!base.isAuthority) { return; }
+
+            if (base.isGrounded || Helpers.Flying(flight))
+            {
+                if (inputBank.moveVector == Vector3.zero)
+                {
+                    SetBrakeState(characterDirection.forward);
+                    return;
+                }
+                else if (Vector3.Dot(inputBank.moveVector, characterDirection.forward) < 0.2f)
+                {
+                    SetBrakeState(inputBank.moveVector.normalized);
+                    return;
+                }
+            }
+            this.outer.SetNextStateToMain();
+        }
+
+        protected virtual void SetBrakeState(Vector3 endDirection)
+        {
+            Brake brake = new Brake();
+            brake.endDirection = endDirection;
+            outer.SetNextState(brake);
+        }
+
         public override void OnExit()
         {
             base.GetModelAnimator().SetBool("isBoosting", false);
@@ -244,7 +290,7 @@ namespace HedgehogUtils.Boost.EntityStates
 
         public virtual string GetSoundString()
         {
-            return "Play_boost";
+            return "Play_hedgehogutils_boost";
         }
 
         public virtual GameObject GetFlashPrefab()
@@ -258,6 +304,16 @@ namespace HedgehogUtils.Boost.EntityStates
         public virtual Material GetOverlayMaterial()
         {
             return LegacyResourcesAPI.Load<Material>("Materials/matOnHelfire");
+        }
+
+        public virtual void PlayBoostAnimation()
+        {
+            base.PlayCrossfade("Body", "Boost", 0.1f);
+        }
+
+        public virtual void PlayAirBoostAnimation()
+        {
+            base.PlayCrossfade("Body", "AirBoost", "Roll.playbackRate", minAirBoostDuration, minAirBoostDuration);
         }
 
         public virtual void OnSkillChanged(GenericSkill skill)

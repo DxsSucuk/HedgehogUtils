@@ -1,4 +1,5 @@
-﻿using RoR2;
+﻿using R2API;
+using RoR2;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -71,7 +72,7 @@ namespace HedgehogUtils.Boost
             }
         }
 
-        public void CalculateBoostVariables()
+        public virtual void CalculateBoostVariables()
         {
             if (body && boostExists)
             {
@@ -141,6 +142,25 @@ namespace HedgehogUtils.Boost
             }
         }
 
+        public void InstantChangeBoostMeter(float amount)
+        {
+            if (NetworkServer.active)
+            {
+                if (amount > 0)
+                {
+                    AddBoost(amount);
+                }
+                else
+                {
+                    RemoveBoost(Mathf.Abs(amount));
+                }
+            }
+            else
+            {
+                predictedMeter = Mathf.Clamp(predictedMeter + amount, 0, maxBoostMeter);
+            }
+        }
+
         public void ResetAirBoost(ref CharacterMotor.HitGroundInfo hitGroundInfo)
         {
             if (boostExists && boostAvailable)
@@ -180,6 +200,24 @@ namespace HedgehogUtils.Boost
             else
             {
                 predictedMeter = Mathf.Clamp(this.predictedMeter + (boostDraining ? boostRegen - boostMeterDrain : boostRegen), 0, this.maxBoostMeter);
+            }
+        }
+        #endregion
+
+        #region Helpers
+        // This makes half of the speed increase from boost apply to baseMoveSpeed so it scales better with having movement speed items
+        // Overall speed boost (assuming sprinting and no other buffs) is the same as the input percent
+        // figure out this stupid math soons please
+        public static void BoostStats(CharacterBody self, RecalculateStatsAPI.StatHookEventArgs stats, float moveSpeedPercentBuff)
+        {
+            if (self)
+            {
+
+                Log.Message(((moveSpeedPercentBuff * self.baseMoveSpeed) / 2) + 0.25f);
+                Log.Message(moveSpeedPercentBuff / 3f);
+
+                stats.baseMoveSpeedAdd += ((moveSpeedPercentBuff * self.baseMoveSpeed) / 2) + 0.25f;
+                stats.moveSpeedMultAdd += moveSpeedPercentBuff / 3f;
             }
         }
         #endregion

@@ -32,7 +32,7 @@ namespace HedgehogUtils.Forms.SuperForm.EntityStates
             if (base.fixedAge >= dropTime/2 && !soundPlayed)
             {
                 soundPlayed = true;
-                Util.PlaySound("Play_emerald_purchase", base.gameObject);
+                Util.PlaySound("Play_hedgehogutils_emerald_purchase", base.gameObject);
             }
             if (base.fixedAge >= dropTime && !dropped)
             {

@@ -26,10 +26,7 @@ namespace HedgehogUtils.Forms.EntityStates
             }
             if (duration > 0)
             {
-                if (BodyCatalog.GetBodyName(base.characterBody.bodyIndex) == "SonicTheHedgehog")
-                {
-                    base.PlayAnimation("FullBody, Override", "Transform", "Roll.playbackRate", this.duration);
-                }
+                base.PlayAnimation("Body", "HedgehogUtilsTransform", "Roll.playbackRate", this.duration);
                 if (NetworkServer.active)
                 {
                     base.characterBody.AddTimedBuff(RoR2Content.Buffs.HiddenInvincibility, duration, 1);

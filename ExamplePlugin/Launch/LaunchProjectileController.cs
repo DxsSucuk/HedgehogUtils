@@ -6,6 +6,7 @@ using UnityEngine.Networking;
 using RoR2;
 using System.Security.Cryptography;
 using TMPro;
+using RoR2.Audio;
 
 namespace HedgehogUtils.Launch
 {
@@ -168,14 +169,14 @@ namespace HedgehogUtils.Launch
             attack = new OverlapAttack();
             ResizeHitBox(2f);
             attack.procCoefficient = 1;
-            attack.attacker = base.gameObject;
+            attack.attacker = attacker.gameObject;
             attack.isCrit = crit;
             attack.damage = damage;
             attack.damageType = DamageType.Stun1s;
             attack.teamIndex = attacker.teamComponent.teamIndex;
             attack.attackerFiltering = AttackerFiltering.NeverHitSelf;
             attack.pushAwayForce = 1500f;
-            //attack.impactSound = Assets.meleeFinalHitSoundEvent.index;
+            attack.impactSound = NetworkSoundEventCatalog.FindNetworkSoundEventIndex("Play_loader_m1_impact");
             attack.addIgnoredHitList(body.healthComponent);
         }
 

@@ -8,6 +8,7 @@ using UnityEngine.AddressableAssets;
 using System.Reflection;
 using HedgehogUtils.Internal;
 using HedgehogUtils.Forms.SuperForm;
+using RoR2.Audio;
 
 namespace HedgehogUtils
 {
@@ -21,15 +22,11 @@ namespace HedgehogUtils
         public static void Initialize()
         {
             LoadAssetBundle();
+            LoadSoundbank();
             BoostAndLaunch();
             SuperForm();
         }
 
-        // The assetbundle will contain assets made/imported through Unity, such as images, meshes, prefabs, etc.
-        // Put any assets you make in the AssetBundle folder in the Unity project for it to be included in the assetbundle
-        // Use the AssetBundle Browser found in the Window menu to build the asset bundle. By default, it will be built to UnityProject/SonicFormsExample/AssetBundles/StandaloneWindows
-        // The file for the asset bundle needs to be put in the same folder as the dll when trying to run the mod
-        // You can change the default location the assetbundle will be placed when it's built so you won't have to manually move the file every time
         internal static void LoadAssetBundle()
         {
             try
@@ -43,6 +40,16 @@ namespace HedgehogUtils
             {
                 Log.Error("Failed to load assetbundle. Make sure your assetbundle name is setup correctly\n" + e);
                 return;
+            }
+        }
+
+        internal static void LoadSoundbank()
+        {
+            using (Stream manifestResourceStream2 = Assembly.GetExecutingAssembly().GetManifestResourceStream("HedgehogUtils.HedgehogUtilsBank.bnk"))
+            {
+                byte[] array = new byte[manifestResourceStream2.Length];
+                manifestResourceStream2.Read(array, 0, array.Length);
+                SoundAPI.SoundBanks.Add(array);
             }
         }
 
@@ -85,6 +92,7 @@ namespace HedgehogUtils
         public static GameObject transformationEmeraldSwirl;
         public static GameObject superFormAura;
         public static GameObject superFormWarning;
+        public static LoopSoundDef superLoopSoundDef;
         #endregion
 
         public static void SuperForm()
@@ -115,6 +123,10 @@ namespace HedgehogUtils
             superFormOverlay.SetColor("_TintColor", new Color(1, 0.8f, 0.4f, 1));
             superFormOverlay.SetColor("_EmissionColor", new Color(1, 0.8f, 0.4f, 1));
             superFormOverlay.SetFloat("_OffsetAmount", 0.01f);
+
+            superLoopSoundDef = ScriptableObject.CreateInstance<LoopSoundDef>();
+            superLoopSoundDef.startSoundName = "Play_hedgehogutils_super_loop";
+            superLoopSoundDef.stopSoundName = "Stop_hedgehogutils_super_loop";
         }
 
         public static GameObject MaterialSwap(GameObject prefab, string assetPath, string pathToParticle = "")

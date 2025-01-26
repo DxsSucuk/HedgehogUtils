@@ -9,13 +9,13 @@ namespace HedgehogUtils.Boost.EntityStates
 {
     public class BoostIdle : BaseSkillState
     {
-        public Type boostEntityStateType;
         protected ICharacterFlightParameterProvider flight;
         public override void OnEnter()
         {
             base.OnEnter();
             flight = base.characterBody.GetComponent<ICharacterFlightParameterProvider>();
-            base.PlayCrossfade("Body", "BoostIdleEnter", 0.3f);
+            PlayBoostIdleEnterAnimation();
+            base.GetModelAnimator().SetBool("isBoosting", true);
         }
 
         public override void FixedUpdate()
@@ -25,7 +25,7 @@ namespace HedgehogUtils.Boost.EntityStates
             {
                 if (base.inputBank.moveVector != Vector3.zero)
                 {
-                    outer.SetNextState(EntityStateCatalog.InstantiateState(boostEntityStateType));
+                    EnterBoost();
                     return;
                 }
                 if (!base.inputBank.skill3.down || (!base.characterMotor.isGrounded && !Helpers.Flying(flight)))
@@ -35,6 +35,22 @@ namespace HedgehogUtils.Boost.EntityStates
                 }
             }
 
+        }
+
+        public override void OnExit()
+        {
+            base.GetModelAnimator().SetBool("isBoosting", false);
+            base.OnExit();
+        }
+
+        public virtual void EnterBoost()
+        {
+            outer.SetNextState(EntityStateCatalog.InstantiateState(typeof(Boost)));
+        }
+
+        public virtual void PlayBoostIdleEnterAnimation()
+        {
+            base.PlayCrossfade("Body", "BoostIdleEnter", 0.3f);
         }
 
         public override InterruptPriority GetMinimumInterruptPriority()

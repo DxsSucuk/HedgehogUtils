@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using EntityStates;
 using R2API;
 using RoR2;
 using RoR2.Projectile;
@@ -22,6 +23,8 @@ namespace HedgehogUtils.Launch
         public static void Launch(CharacterBody target, CharacterBody attacker, Vector3 direction, float damage, bool crit, float speed, float procCoefficient)
         {
             if (bodyBlacklist.Contains(target.name)) { return; }
+            EntityStateMachine bodyState = EntityStateMachine.FindByCustomName(target.gameObject, "Body");
+            if (bodyState && !bodyState.CanInterruptState(InterruptPriority.Vehicle)) { return; }
 
             if (target.HasBuff(Buffs.launchedBuff))
             {

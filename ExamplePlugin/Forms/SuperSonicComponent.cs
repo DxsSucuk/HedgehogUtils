@@ -78,6 +78,8 @@ namespace HedgehogUtils.Forms
             }
         }
 
+        // Doing it like Input.GetKeyDown(form.keybind.Value.MainKey) will fix hte problem of not being able to transform when pressing any other buttons
+        // but will also break people using multiple keybinds at the same time to transform. Does anyone actually do that?
         public void DecideTargetForm()
         {
             targetedForm = null;

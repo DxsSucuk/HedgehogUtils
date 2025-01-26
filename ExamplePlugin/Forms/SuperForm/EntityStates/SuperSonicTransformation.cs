@@ -30,7 +30,7 @@ namespace HedgehogUtils.Forms.SuperForm.EntityStates
             base.OnEnter();
             if (!fromTeamSuper)
             {
-                Util.PlaySound("Play_emerald", base.gameObject);
+                Util.PlaySound("Play_hedgehogutils_emerald", base.gameObject);
                 if (base.isAuthority)
                 {
                     EffectManager.SimpleEffect(Assets.transformationEmeraldSwirl, base.gameObject.transform.position, base.gameObject.transform.rotation, true);
@@ -48,7 +48,7 @@ namespace HedgehogUtils.Forms.SuperForm.EntityStates
         public override void Transform()
         {
             base.Transform();
-            Util.PlaySound("Play_super_transform", base.gameObject);
+            Util.PlaySound("Play_hedgehogutils_super_transform", base.gameObject);
             base.cameraTargetParams.RemoveParamsOverride(this.camOverrideHandle, 0.2f);
         }
     }

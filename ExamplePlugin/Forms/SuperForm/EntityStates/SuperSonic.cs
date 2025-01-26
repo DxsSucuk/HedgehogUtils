@@ -47,7 +47,7 @@ namespace HedgehogUtils.Forms.SuperForm.EntityStates
         public static SkillDef grandSlam;
 
         // Character specific Super compat
-        //private BoostLogic boostLogic;
+        private Boost.BoostLogic boostLogic;
         private VoidSurvivorController viend;
 
         public override void OnEnter()
@@ -59,15 +59,15 @@ namespace HedgehogUtils.Forms.SuperForm.EntityStates
                 this.superAura = GameObject.Instantiate<GameObject>(Assets.superFormAura, base.FindModelChild("Chest"));
             }
 
-            /*boostLogic = base.GetComponent<BoostLogic>();
+            boostLogic = base.GetComponent<HedgehogUtils.Boost.BoostLogic>();
             if (boostLogic)
             {
                 boostLogic.alwaysMaxBoost = true;
-            }*/
+            }
 
             ApplyOverlay(ref temporaryOverlay, Assets.superFormOverlay);
 
-            //superLoop = LoopSoundManager.PlaySoundLoopLocal(base.gameObject, Assets.superLoopSoundDef);
+            superLoop = LoopSoundManager.PlaySoundLoopLocal(base.gameObject, Assets.superLoopSoundDef);
 
             this.camOverrideHandle = base.cameraTargetParams.AddParamsOverride(new CameraTargetParams.CameraParamsOverrideRequest
             {
@@ -97,14 +97,14 @@ namespace HedgehogUtils.Forms.SuperForm.EntityStates
 
         public override void OnExit()
         {
-            //LoopSoundManager.StopSoundLoopLocal(superLoop);
+            LoopSoundManager.StopSoundLoopLocal(superLoop);
 
             RemoveOverlay(ref temporaryOverlay);
 
-            /*if (boostLogic)
+            if (boostLogic)
             {
                 boostLogic.alwaysMaxBoost = false;
-            }*/
+            }
 
             if (this.superAura)
             {

@@ -123,15 +123,19 @@ namespace HedgehogUtils.Forms
         private static void EmeraldDropSound(On.RoR2.GenericPickupController.orig_Start orig, GenericPickupController self)
         {
             orig(self);
-            if (self.pickupDisplay)
+            if (self && self.pickupDisplay)
             {
-                ItemIndex itemIndex = PickupCatalog.GetPickupDef(self.pickupIndex).itemIndex;
-                if (itemIndex != ItemIndex.None)
+                PickupDef pickupDef = PickupCatalog.GetPickupDef(self.pickupIndex);
+                if (pickupDef != null)
                 {
-                    ItemDef itemDef = ItemCatalog.GetItemDef(itemIndex);
-                    if (itemDef && itemDef._itemTierDef == Items.emeraldTier)
+                    ItemIndex itemIndex = pickupDef.itemIndex;
+                    if (itemIndex != ItemIndex.None)
                     {
-                        Util.PlaySound("Play_emerald_spawn", self.gameObject);
+                        ItemDef itemDef = ItemCatalog.GetItemDef(itemIndex);
+                        if (itemDef && itemDef._itemTierDef == Items.emeraldTier)
+                        {
+                            Util.PlaySound("Play_hedgehogutils_emerald_spawn", self.gameObject);
+                        }
                     }
                 }
             }

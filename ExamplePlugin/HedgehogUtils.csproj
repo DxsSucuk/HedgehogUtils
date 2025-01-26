@@ -13,6 +13,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="HedgehogUtilsBank.bnk" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="HedgehogUtilsBank.bnk" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="BepInEx.Analyzers" Version="1.0.*">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -52,6 +60,9 @@
 	  </Reference>
 	  <Reference Include="R2API.RecalculateStats">
 	    <HintPath>..\libs\R2API.RecalculateStats.dll</HintPath>
+	  </Reference>
+	  <Reference Include="R2API.Sound">
+	    <HintPath>..\libs\R2API.Sound.dll</HintPath>
 	  </Reference>
 	  <Reference Include="RiskOfOptions">
 	    <HintPath>..\libs\RiskOfOptions.dll</HintPath>
