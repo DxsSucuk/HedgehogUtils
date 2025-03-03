@@ -35,9 +35,7 @@ namespace HedgehogUtils.Launch
                 }
             }
 
-            GameObject launchProjectile = UnityEngine.GameObject.Instantiate(launchProjectilePrefab);
-            launchProjectile.transform.position = target.corePosition;
-            launchProjectile.transform.rotation = Quaternion.LookRotation(direction);
+            GameObject launchProjectile = UnityEngine.GameObject.Instantiate(launchProjectilePrefab, target.corePosition, Quaternion.LookRotation(direction));
             LaunchProjectileController launchController = launchProjectile.GetComponent<LaunchProjectileController>();
             launchController.Restart(attacker, direction, damage, crit, speed, procCoefficient);
             VehicleSeat vehicle = launchProjectile.GetComponent<VehicleSeat>();

@@ -32,7 +32,7 @@ namespace HedgehogUtils.Forms
             if (Forms.formToHandlerObject.TryGetValue(Forms.GetFormDef(formIndex), out GameObject handlerObject))
             {
                 FormHandler handler = handlerObject.GetComponent(typeof(FormHandler)) as FormHandler;
-                handler.OnTransform(body.GetComponent<SuperSonicComponent>());
+                handler.OnTransform(body.GetComponent<FormComponent>());
             }
 
         }

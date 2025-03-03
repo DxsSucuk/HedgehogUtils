@@ -78,27 +78,27 @@ namespace HedgehogUtils.Forms
             }
         }
 
-        public virtual bool HasItems(SuperSonicComponent superSonicComponent)
+        public virtual bool HasItems(FormComponent component)
         {
             if (form.requiresItems)
             {
                 if (itemTracker != null)
                 {
-                    return itemTracker.ItemRequirementMet(superSonicComponent);
+                    return itemTracker.ItemRequirementMet(component);
                 }
                 Log.Error("Form that needs items has no itemTracker");
             }
             return true;
         }
 
-        public virtual bool CanTransform(SuperSonicComponent component)
+        public virtual bool CanTransform(FormComponent component)
         {
             bool hasItems = HasItems(component);
             Log.Message("FormHandler with form " + form.ToString() + "\nTeam Super? " + teamSuper + ". Has Items? " + hasItems + ". Number of transforms? " + numberOfTimesTransformed + " out of max " + form.maxTransforms);
             return (hasItems && (form.maxTransforms <= 0 || numberOfTimesTransformed < form.maxTransforms)) || teamSuper;
         }
 
-        public virtual void OnTransform(SuperSonicComponent super)
+        public virtual void OnTransform(FormComponent component)
         {
             if (!teamSuper)
             {
@@ -107,23 +107,23 @@ namespace HedgehogUtils.Forms
                 teamSuperTimer = teamSuperTimerDuration;
                 if (form.consumeItems)
                 {
-                    itemTracker.RemoveItems(super);
+                    itemTracker.RemoveItems(component);
                 }
-                AnnounceTransformation(super);
+                AnnounceTransformation(component);
             }
-            TransformEngiTurrets(super);
+            TransformEngiTurrets(component);
         }
 
-        public virtual void AnnounceTransformation(SuperSonicComponent super)
+        public virtual void AnnounceTransformation(FormComponent component)
         {
             if (Config.AnnounceSuperTransformation().Value)
             {
-                if (super.body.master && super.body.master.playerCharacterMasterController && super.body.master.playerCharacterMasterController.networkUser)
+                if (component.body.master && component.body.master.playerCharacterMasterController && component.body.master.playerCharacterMasterController.networkUser)
                 {
                     Chat.SendBroadcastChat(new Chat.SubjectFormatChatMessage
                     {
                         baseToken = HedgehogUtilsPlugin.Prefix + "_SUPER_FORM_ANNOUNCE_TEXT",
-                        subjectAsNetworkUser = super.body.master.playerCharacterMasterController.networkUser,
+                        subjectAsNetworkUser = component.body.master.playerCharacterMasterController.networkUser,
                         paramTokens = new string[] { RoR2.Language.GetString(form.name) }
                     });
                 }
@@ -132,24 +132,24 @@ namespace HedgehogUtils.Forms
                     Chat.SendBroadcastChat(new Chat.SubjectFormatChatMessage
                     {
                         baseToken = HedgehogUtilsPlugin.Prefix + "_SUPER_FORM_ANNOUNCE_TEXT",
-                        subjectAsCharacterBody = super.body,
+                        subjectAsCharacterBody = component.body,
                         paramTokens = new string[] { RoR2.Language.GetString(form.name) }
                     });
                 }
             }
         }
 
-        public virtual void TransformEngiTurrets(SuperSonicComponent super)
+        public virtual void TransformEngiTurrets(FormComponent component)
         {
-            if (super.body.master)
+            if (component.body.master)
             {
-                if (super.body.master.deployablesList != null)
+                if (component.body.master.deployablesList != null)
                 {
-                    foreach (DeployableInfo deployable in super.body.master.deployablesList)
+                    foreach (DeployableInfo deployable in component.body.master.deployablesList)
                     {
                         if (deployable.slot == DeployableSlot.EngiTurret)
                         {
-                            if (deployable.deployable.TryGetComponent<CharacterMaster>(out CharacterMaster turretMaster) && turretMaster.GetBodyObject() && turretMaster.GetBodyObject().TryGetComponent<SuperSonicComponent>(out SuperSonicComponent turretSuper))
+                            if (deployable.deployable.TryGetComponent<CharacterMaster>(out CharacterMaster turretMaster) && turretMaster.GetBodyObject() && turretMaster.GetBodyObject().TryGetComponent<FormComponent>(out FormComponent turretSuper))
                             {
                                 turretSuper.targetedForm = form;
                                 turretSuper.Transform();
@@ -255,9 +255,9 @@ namespace HedgehogUtils.Forms
 
     public interface INeededItemTracker
     {
-        bool ItemRequirementMet(SuperSonicComponent component);
+        bool ItemRequirementMet(FormComponent component);
 
-        void RemoveItems(SuperSonicComponent super);
+        void RemoveItems(FormComponent component);
     }
 
     [RequireComponent(typeof(FormHandler))]
@@ -302,7 +302,7 @@ namespace HedgehogUtils.Forms
             SubscribeEvents(false);
         }
         
-        public bool ItemRequirementMet(SuperSonicComponent component)
+        public bool ItemRequirementMet(FormComponent component)
         {
             return allItems && CanTakeSharedItems(handler.form, component);
         }
@@ -342,7 +342,7 @@ namespace HedgehogUtils.Forms
             NetworkallItems = missingItems.Count == 0;
             Log.Message("Missing items for "+ handler.form.ToString() + ": " + string.Concat(missingItems.Select(x => x.ToString())));
         }
-        public bool CanTakeSharedItems(FormDef form, SuperSonicComponent super)
+        public bool CanTakeSharedItems(FormDef form, FormComponent super)
         {
             if (super.formToItemTracker.TryGetValue(form, out ItemTracker itemTracker))
             {
@@ -406,16 +406,16 @@ namespace HedgehogUtils.Forms
             itemsDirty = true;
         }
 
-        public void RemoveItems(SuperSonicComponent super)
+        public void RemoveItems(FormComponent component)
         {
             foreach (NeededItem item in handler.form.neededItems)
             {
                 int neededItems = item.count;
-                if (super.body.master)
+                if (component.body.master)
                 {
-                    int numToConstume = Math.Min(super.body.master.inventory.GetItemCount(item), neededItems);
+                    int numToConstume = Math.Min(component.body.master.inventory.GetItemCount(item), neededItems);
                     neededItems -= numToConstume;
-                    super.body.master.inventory.RemoveItem(item, numToConstume);
+                    component.body.master.inventory.RemoveItem(item, numToConstume);
                     if (neededItems <= 0)
                     {
                         continue;
@@ -565,28 +565,28 @@ namespace HedgehogUtils.Forms
             handler = this.GetComponent<FormHandler>();
         }
 
-        public bool ItemRequirementMet(SuperSonicComponent component)
+        public bool ItemRequirementMet(FormComponent component)
         {
             Log.Message("Checking unsynceditemtracker");
             return component.formToItemTracker.GetValueSafe(handler.form).allItems;
         }
 
-        public void RemoveItems(SuperSonicComponent super)
+        public void RemoveItems(FormComponent component)
         {
-            if (super.body)
+            if (component.body)
             {
-                if (super.body.master)
+                if (component.body.master)
                 {
                     foreach (NeededItem item in handler.form.neededItems)
                     {
-                        if (super.body.master.inventory.GetItemCount(item) >= item.count)
+                        if (component.body.master.inventory.GetItemCount(item) >= item.count)
                         {
-                            super.body.master.inventory.RemoveItem(item, item.count);
+                            component.body.master.inventory.RemoveItem(item, item.count);
                         }
                         else
                         {
                             Log.Warning("Does not have the items to be removed for transforming");
-                            super.body.master.inventory.RemoveItem(item, super.body.master.inventory.GetItemCount(item));
+                            component.body.master.inventory.RemoveItem(item, component.body.master.inventory.GetItemCount(item));
                         }
                     }
                 }

@@ -224,7 +224,7 @@ namespace HedgehogUtils.Launch
                 writer.Write(attacker.netId);
             }
             bool flag = false;
-            if ((base.syncVarDirtyBits & 1U) != 0U)
+            /*if ((base.syncVarDirtyBits & 1U) != 0U)
             {
                 if (!flag)
                 {
@@ -259,7 +259,7 @@ namespace HedgehogUtils.Launch
                     flag = true;
                 }
                 writer.Write(attacker.netId);
-            }
+            }*/
             return flag;
         }
 
@@ -272,7 +272,7 @@ namespace HedgehogUtils.Launch
                 this.movementVector = reader.ReadVector3();
                 this.attacker = reader.ReadNetworkIdentity().gameObject.GetComponent<CharacterBody>();
             }
-            int num = (int)reader.ReadPackedUInt32();
+            /*int num = (int)reader.ReadPackedUInt32();
             if ((num & 1U) != 0U)
             {
                 this.crit = reader.ReadBoolean();
@@ -288,7 +288,7 @@ namespace HedgehogUtils.Launch
             if ((num & 8U) != 0U)
             {
                 this.attacker = reader.ReadNetworkIdentity().gameObject.GetComponent<CharacterBody>();
-            }
+            }*/
         }
     }
 }

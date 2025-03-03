@@ -87,6 +87,8 @@ namespace HedgehogUtils
 
             Language.Initialize();
 
+            States.RegisterStates();
+
             if (riskOfOptionsLoaded)
             {
                 HedgehogUtils.Config.RiskOfOptionsSetup();

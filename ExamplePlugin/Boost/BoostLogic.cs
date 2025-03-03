@@ -212,10 +212,6 @@ namespace HedgehogUtils.Boost
         {
             if (self)
             {
-
-                Log.Message(((moveSpeedPercentBuff * self.baseMoveSpeed) / 2) + 0.25f);
-                Log.Message(moveSpeedPercentBuff / 3f);
-
                 stats.baseMoveSpeedAdd += ((moveSpeedPercentBuff * self.baseMoveSpeed) / 2) + 0.25f;
                 stats.moveSpeedMultAdd += moveSpeedPercentBuff / 3f;
             }

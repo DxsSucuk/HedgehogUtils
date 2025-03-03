@@ -77,7 +77,7 @@ namespace HedgehogUtils.Forms
         {
             if (gameObject)
             {
-                SuperSonicComponent component = gameObject.GetComponent<SuperSonicComponent>();
+                FormComponent component = gameObject.GetComponent<FormComponent>();
                 if (component)
                 {
                     return component.activeForm == form;
@@ -109,12 +109,12 @@ namespace HedgehogUtils.Forms
             {
                 foreach (FormDef form in FormCatalog.formsCatalog)
                 {
-                    if (form.allowedBodyList.BodyIsAllowed(BodyCatalog.FindBodyIndex(body)) && body.TryGetComponent<CharacterBody>(out CharacterBody characterBody) && EntityStateMachine.FindByCustomName(body, "Body") && !body.GetComponent<SuperSonicComponent>())
+                    if (form.allowedBodyList.BodyIsAllowed(BodyCatalog.FindBodyIndex(body)) && body.GetComponent<CharacterBody>() && EntityStateMachine.FindByCustomName(body, "Body") && !body.GetComponent<FormComponent>())
                     {
-                        body.AddComponent<SuperSonicComponent>();
+                        body.AddComponent<FormComponent>();
 
                         EntityStateMachine superSonicState = body.AddComponent<EntityStateMachine>();
-                        superSonicState.customName = "SonicForms";
+                        superSonicState.customName = "HedgehogUtilsForms";
                         superSonicState.mainStateType = new SerializableEntityStateType(typeof(BaseState));
                         superSonicState.initialStateType = new SerializableEntityStateType(typeof(BaseState));
 

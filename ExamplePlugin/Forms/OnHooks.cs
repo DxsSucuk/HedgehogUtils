@@ -38,7 +38,7 @@ namespace HedgehogUtils.Forms
             if (!NetworkServer.active) { orig(self, damage); }
             if (self)
             {
-                if (self.gameObject.TryGetComponent(out SuperSonicComponent formComponent))
+                if (self.gameObject.TryGetComponent(out FormComponent formComponent))
                 {
                     if (formComponent.activeForm)
                     {
@@ -101,14 +101,14 @@ namespace HedgehogUtils.Forms
         {
             if (bodyObject)
             {
-                if (bodyObject.TryGetComponent(out SuperSonicComponent superSonic))
+                if (bodyObject.TryGetComponent(out FormComponent component))
                 {
-                    if (superSonic.activeForm)
+                    if (component.activeForm)
                     {
-                        if (!RoR2.Language.IsTokenInvalid(superSonic.activeForm.name + "_PREFIX"))
+                        if (!RoR2.Language.IsTokenInvalid(component.activeForm.name + "_PREFIX"))
                         {
                             string text = orig(bodyObject);
-                            text = RoR2.Language.GetStringFormatted(superSonic.activeForm.name + "_PREFIX", new object[]
+                            text = RoR2.Language.GetStringFormatted(component.activeForm.name + "_PREFIX", new object[]
                             {
                             text
                             });

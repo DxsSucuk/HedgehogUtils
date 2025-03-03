@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 91830784
+CRC: 3090311436
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 95998e45982fb03b10378048ccc55938
+    Hash: 03d3a2f3dad610c0570d9bdc01c38f2d
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 62826cd08ddf4a0246ea3f569d88276d
+    Hash: e5cba3f06fd1266937ad97e644d6e704
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -30,6 +30,8 @@ ClassTypes:
 - Class: 65
   Script: {instanceID: 0}
 - Class: 74
+  Script: {instanceID: 0}
+- Class: 91
   Script: {instanceID: 0}
 - Class: 95
   Script: {instanceID: 0}
@@ -111,6 +113,7 @@ Assets:
 - Assets/AssetBundle/Emeralds/Materials/matPurple.mat
 - Assets/AssetBundle/VFX/Textures/texRainbowLensFlare 1.png
 - Assets/AssetBundle/VFX/Textures/FlameRoundGreyParticleSheet.tif
+- Assets/AssetBundle/Emeralds/Animations/animRing.controller
 - Assets/AssetBundle/VFX/Meshes/Boost.fbx
 - Assets/AssetBundle/Emeralds/Icons/texSuperBuffIcon.png
 - Assets/AssetBundle/Emeralds/Materials/matGreen.mat

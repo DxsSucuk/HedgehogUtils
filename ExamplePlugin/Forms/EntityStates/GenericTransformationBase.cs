@@ -22,7 +22,7 @@ namespace HedgehogUtils.Forms.EntityStates
             base.OnEnter();
             if (base.isAuthority)
             {
-                this.superSonic.superSonicState.SetNextStateToMain(); // detransform
+                this.formComponent.superSonicState.SetNextStateToMain(); // detransform
             }
             if (duration > 0)
             {
@@ -38,7 +38,7 @@ namespace HedgehogUtils.Forms.EntityStates
         public override void FixedUpdate()
         {
             base.FixedUpdate();
-            if (fixedAge >= this.duration / 2 && !effectFired && this.superSonic)
+            if (fixedAge >= this.duration / 2 && !effectFired && this.formComponent)
             {
                 Transform();
             }

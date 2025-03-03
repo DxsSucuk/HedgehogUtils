@@ -16,7 +16,7 @@ namespace HedgehogUtils.Boost.EntityStates
         public const float maxAirBoostDuration = 0.4f;
 
         public static float boostStartMeterDrain = 20f;
-        public static float boostMeterDrain = 0.6f;
+        public static float boostMeterDrain = 0.67f;
         public static float screenShake = 3.5f;
         public static float airBoostY = 8;
 
@@ -40,7 +40,10 @@ namespace HedgehogUtils.Boost.EntityStates
 
         protected GameObject aura;
 
-        protected bool drainBoostMeter = true;
+        protected virtual bool drainBoostMeter
+        {
+            get { return true; }
+        }
 
         protected virtual BuffDef buff
         {

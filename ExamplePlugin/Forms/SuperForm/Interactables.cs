@@ -9,6 +9,7 @@ using BepInEx.Configuration;
 using RoR2.Hologram;
 using HedgehogUtils.Forms;
 using HedgehogUtils.Internal;
+using UnityEngine.AddressableAssets;
 
 namespace HedgehogUtils.Forms.SuperForm
 {
@@ -90,6 +91,10 @@ namespace HedgehogUtils.Forms.SuperForm
             Log.Message("PickupDisplay done");
 
             //Materials.ShinyMaterial(Assets.mainAssetBundle.LoadAsset<Material>("matRing"));
+            Material ringMaterial = new Material(Addressables.LoadAssetAsync<Material>("RoR2/Base/goldshores/matGoldshoresGold.mat").WaitForCompletion());
+            ringMaterial.SetFloat("_NormalStrength", 0);
+            prefabBase.transform.Find("RingParent/Ring").GetComponent<MeshRenderer>().material = ringMaterial;
+            prefabBase.transform.Find("RingParent/Ring/RingLOD").GetComponent<MeshRenderer>().material = ringMaterial;
 
             Log.Message("Material Done");
             

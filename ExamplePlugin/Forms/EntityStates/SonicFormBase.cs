@@ -15,7 +15,7 @@ namespace HedgehogUtils.Forms.EntityStates
     {
         public FormDef form;
 
-        protected SuperSonicComponent superSonicComponent;
+        protected FormComponent formComponent;
 
         protected bool buffApplied;
 
@@ -33,9 +33,9 @@ namespace HedgehogUtils.Forms.EntityStates
                 this.characterModel = modelTransform.GetComponent<CharacterModel>();
             }
 
-            superSonicComponent = base.GetComponent<SuperSonicComponent>();
+            formComponent = base.GetComponent<FormComponent>();
 
-            superSonicComponent.OnTransform(form);
+            formComponent.OnTransform(form);
 
             if (form.flight)
             {
@@ -67,7 +67,7 @@ namespace HedgehogUtils.Forms.EntityStates
             {
                 UpdateFlight(false);
             }
-            superSonicComponent.TransformEnd();
+            formComponent.TransformEnd();
             base.OnExit();
         }
 
@@ -83,9 +83,9 @@ namespace HedgehogUtils.Forms.EntityStates
             }
             else if (buffApplied)
             {
-                if (superSonicComponent)
+                if (formComponent)
                 {
-                    superSonicComponent.superSonicState.SetNextState(new BaseState());
+                    formComponent.superSonicState.SetNextState(new BaseState());
                 }
                 return;
             }
@@ -140,27 +140,6 @@ namespace HedgehogUtils.Forms.EntityStates
             {
                 temporaryOverlay.Destroy();
             }
-        }
-
-        protected bool SkillHelper(GenericSkill slot, SkillDef original, SkillDef upgrade, bool set)
-        {
-            if (slot)
-            {
-                if (slot.baseSkill == original)
-                {
-                    if (set)
-                    {
-                        slot.SetSkillOverride(this, upgrade, GenericSkill.SkillOverridePriority.Upgrade);
-                        return true;
-                    }
-                    else
-                    {
-                        slot.UnsetSkillOverride(this, upgrade, GenericSkill.SkillOverridePriority.Upgrade);
-                        return true;
-                    }
-                }
-            }
-            return false;
         }
 
         private void UpdateFlight(bool flying)

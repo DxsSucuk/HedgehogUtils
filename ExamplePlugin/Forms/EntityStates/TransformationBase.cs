@@ -12,17 +12,17 @@ namespace HedgehogUtils.Forms.EntityStates
     {
         public FormDef form;
 
-        protected SuperSonicComponent superSonic;
+        protected FormComponent formComponent;
 
         public bool fromTeamSuper = false;
 
         public override void OnEnter()
         {
             base.OnEnter();
-            this.superSonic= base.GetComponent<SuperSonicComponent>();
+            this.formComponent= base.GetComponent<FormComponent>();
             if (base.isAuthority)
             {
-                this.form = superSonic.targetedForm;
+                this.form = formComponent.targetedForm;
             }
         }
 
@@ -30,7 +30,7 @@ namespace HedgehogUtils.Forms.EntityStates
         {
             if (base.isAuthority)
             {
-                this.superSonic.SetNextForm(this.form);
+                this.formComponent.SetNextForm(this.form);
             }
         }
 

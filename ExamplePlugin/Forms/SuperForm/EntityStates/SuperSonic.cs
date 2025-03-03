@@ -79,10 +79,6 @@ namespace HedgehogUtils.Forms.SuperForm.EntityStates
             {
                 FireBlastAttack();
 
-                if (base.skillLocator)
-                {
-                    SkillOverrides(true);
-                }
                 EffectManager.SimpleMuzzleFlash(Assets.superFormTransformationEffect, base.gameObject, "Chest", true);
             }
             if (NetworkServer.active)
@@ -116,16 +112,6 @@ namespace HedgehogUtils.Forms.SuperForm.EntityStates
                 Destroy(this.warning);
             }
 
-            if (base.isAuthority && base.skillLocator)
-            {
-                SkillOverrides(false);
-                if (base.skillLocator.secondary)
-                {
-                    base.skillLocator.secondary.UnsetSkillOverride(this, idwAttack, GenericSkill.SkillOverridePriority.Contextual);
-                    base.skillLocator.secondary.UnsetSkillOverride(this, emptyParry, GenericSkill.SkillOverridePriority.Contextual);
-                }
-            }
-
             if (viend && NetworkServer.active)
             {
                 viend.AddCorruption(-100);
@@ -153,18 +139,6 @@ namespace HedgehogUtils.Forms.SuperForm.EntityStates
             {
                 this.warning = GameObject.Instantiate<GameObject>(Assets.superFormWarning, chest);
             }
-        }
-
-        public virtual void SkillOverrides(bool set)
-        {
-            /*if (!base.skillLocator) { return; }
-            SkillHelper(base.skillLocator.primary, SonicTheHedgehogCharacter.primarySkillDef, melee, set);
-            if (!SkillHelper(base.skillLocator.secondary, SonicTheHedgehogCharacter.sonicBoomSkillDef, sonicBoom, set))
-            {
-                SkillHelper(base.skillLocator.secondary, SonicTheHedgehogCharacter.parrySkillDef, parry, set);
-            }
-            SkillHelper(base.skillLocator.utility, SonicTheHedgehogCharacter.boostSkillDef, boost, set);
-            SkillHelper(base.skillLocator.special, SonicTheHedgehogCharacter.grandSlamSkillDef, grandSlam, set);*/
         }
 
         public void ParryActivated()
