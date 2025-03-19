@@ -6,9 +6,9 @@ namespace HedgehogUtils
 {
     public static class Buffs
     {
-        internal static BuffDef superFormBuff;
+        public static BuffDef superFormBuff;
 
-        internal static BuffDef launchedBuff;
+        public static BuffDef launchedBuff;
 
         internal static void RegisterBuffs()
         {

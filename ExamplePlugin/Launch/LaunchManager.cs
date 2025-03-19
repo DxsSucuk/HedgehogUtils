@@ -18,7 +18,7 @@ namespace HedgehogUtils.Launch
         
         public static string[] bodyBlacklist = { "BrotherBody", "BrotherGlassBody", "BrotherHurtBody", "FalseSonBossBody", "MagmaWormBody", "ElectricWormBody", "ShopkeeperBody", "MiniVoidRaidCrabBodyBase", "MiniVoidRaidCrabBodyPhase1", "MiniVoidRaidCrabBodyPhase2", "MiniVoidRaidCrabBodyPhase3", "ScorchlingBody" };
 
-        public const float launchSpeed = 45f;
+        public const float launchSpeed = 55f;
 
         public static void Launch(CharacterBody target, CharacterBody attacker, Vector3 direction, float damage, bool crit, float speed, float procCoefficient)
         {
@@ -28,10 +28,13 @@ namespace HedgehogUtils.Launch
 
             if (target.HasBuff(Buffs.launchedBuff))
             {
-                if (target.currentVehicle && target.currentVehicle.TryGetComponent<LaunchProjectileController>(out LaunchProjectileController existingController))
+                if (target.currentVehicle && target.currentVehicle.gameObject.TryGetComponent<LaunchProjectileController>(out LaunchProjectileController existingController))
                 {
-                    existingController.Restart(attacker, direction, damage, crit, speed, procCoefficient);
-                    return;
+                    if (existingController.age > 0.3f)
+                    {
+                        existingController.Restart(attacker, direction, damage, crit, speed, procCoefficient);
+                        return;
+                    }
                 }
             }
 

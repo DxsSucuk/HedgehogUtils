@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Text;
 using UnityEngine.Networking;
+using RoR2;
 
 namespace HedgehogUtils.Boost.EntityStates
 {
@@ -62,9 +63,16 @@ namespace HedgehogUtils.Boost.EntityStates
             {
                 if (Vector3.Dot(base.characterDirection.forward, base.inputBank.moveVector) < -0.3f)
                 {
-                    Brake reverse = new Brake();
-                    reverse.endDirection = base.inputBank.moveVector;
-                    this.outer.SetNextState(reverse);
+                    if (typeof(SkillDefs.IBoostSkill).IsAssignableFrom(base.skillLocator.utility.skillDef.GetType()))
+                    {
+                        Brake reverse = EntityStateCatalog.InstantiateState(((SkillDefs.IBoostSkill)base.skillLocator.utility.skillDef).brakeState.stateType) as Brake;
+                        reverse.endDirection = base.inputBank.moveVector;
+                        outer.SetNextState(reverse);
+                    }
+                    else
+                    {
+                        outer.SetNextStateToMain();
+                    }
                     return;
                 }
             }

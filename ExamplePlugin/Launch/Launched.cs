@@ -36,26 +36,23 @@ namespace HedgehogUtils.Launch
                     EntityStateMachine[] array = idleStateMachineProvider.idleStateMachine;
                     for (int i = 0; i < array.Length; i++)
                     {
-                        array[i].SetNextState(new Idle());
+                        if (array[i] != this.outer)
+                        {
+                            array[i].SetNextState(new Idle());
+                        }
                     }
                 }
             }
         }
 
+        public override void FixedUpdate()
+        {
+            base.FixedUpdate();
+            //Log.Warning("Has Buff?: " + base.characterBody.HasBuff(Buffs.launchedBuff));
+        }
+
         public override void OnExit()
         {
-            if (base.characterBody && base.characterBody.HasBuff(Buffs.launchedBuff) && NetworkServer.active)
-            {
-                base.characterBody.RemoveBuff(Buffs.launchedBuff);
-            }
-            /*if (idleStateMachineProvider && base.isAuthority)
-            {
-                EntityStateMachine[] array = idleStateMachineProvider.idleStateMachine;
-                for (int i = 0; i < array.Length; i++)
-                {
-                    array[i].SetNextStateToMain();
-                }
-            }*/
             base.OnExit();
         }
 

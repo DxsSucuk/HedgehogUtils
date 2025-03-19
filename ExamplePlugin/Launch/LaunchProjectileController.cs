@@ -21,11 +21,12 @@ namespace HedgehogUtils.Launch
         public float duration;
         public const float baseDuration = 0.85f;
         private const float fadeDurationPercent = 0.8f;
-        private const float noImpactDurationPercent = 0.15f;
+        private const float noImpactDuration = 0.4f;
+        private const float hitStopDuration = 0.1f;
 
         protected OverlapAttack attack;
         private float attackTimer;
-        private float age;
+        public float age;
 
         public CharacterBody attacker;
 
@@ -67,7 +68,7 @@ namespace HedgehogUtils.Launch
             radius = 2.5f;
             if (body)
             {
-                radius = Mathf.Max(radius, body.bestFitRadius * 1.3f);
+                radius = Mathf.Max(radius, body.bestFitRadius * 1.5f);
                 
                 vfxObject = UnityEngine.Object.Instantiate(crit ? Assets.launchCritAuraEffect : Assets.launchAuraEffect, base.transform);
                 vfxObject.transform.localScale *= radius;
@@ -107,7 +108,7 @@ namespace HedgehogUtils.Launch
             }
 
             this.rigidbody.rotation = Quaternion.LookRotation(movementVector.normalized);
-            this.rigidbody.velocity = movementVector.normalized * finalSpeed;
+            this.rigidbody.velocity = age <= hitStopDuration ? Vector3.zero : movementVector.normalized * finalSpeed;
 
             if (Util.HasEffectiveAuthority(base.gameObject))
             {
@@ -133,6 +134,10 @@ namespace HedgehogUtils.Launch
         {
             if (body)
             {
+                if (body.HasBuff(Buffs.launchedBuff) && NetworkServer.active)
+                {
+                    body.RemoveBuff(Buffs.launchedBuff);
+                }
                 if (body.healthComponent)
                 {
                     if (body.healthComponent.alive)
@@ -142,7 +147,7 @@ namespace HedgehogUtils.Launch
                             vehicle.passengerInfo.bodyStateMachine.SetNextStateToMain();
                         }
                     }
-                    else if (Util.HasEffectiveAuthority(body.gameObject))
+                    else
                     {
                         CharacterDeathBehavior death = body.gameObject.GetComponent<CharacterDeathBehavior>();
                         if (death)
@@ -202,9 +207,9 @@ namespace HedgehogUtils.Launch
             }
         }
 
-        public void OnCollisionEnter(Collision collision)
+        public void OnCollisionStay()
         {
-            if (!NetworkServer.active || !vehicleInit || (age < (duration * noImpactDurationPercent))) { return; }
+            if (!NetworkServer.active || !vehicleInit || (age < noImpactDuration)) { return; }
 
             Destroy(base.gameObject);
 

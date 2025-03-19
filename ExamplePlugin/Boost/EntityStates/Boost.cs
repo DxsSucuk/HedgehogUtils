@@ -9,7 +9,7 @@ using UnityEngine.UIElements.Experimental;
 
 namespace HedgehogUtils.Boost.EntityStates
 {
-    public class Boost : GenericCharacterMain
+    public abstract class Boost : GenericCharacterMain
     {
         public const float minDuration = 0.4f;
         public const float minAirBoostDuration = 0.2f;
@@ -111,8 +111,8 @@ namespace HedgehogUtils.Boost.EntityStates
                 if (NetworkServer.active)
                 {
                     boostLogic.RemoveBoost(boostMeterDrain);
-                    boostLogic.boostMeterDrain = boostMeterDrain;
                 }
+                boostLogic.boostMeterDrain = boostMeterDrain;
                 boostLogic.boostDraining = true;
             }
 
@@ -153,7 +153,7 @@ namespace HedgehogUtils.Boost.EntityStates
                 return;
             }
 
-            if (base.isAuthority && Vector3.Dot(inputBank.moveVector, targetDirection) < 0.1f && base.fixedAge > minDuration)
+            if (base.isAuthority && Vector3.Dot(inputBank.moveVector, targetDirection) < -0.05f && base.fixedAge > minDuration)
             {
                 SetNextState();
                 return;
@@ -260,7 +260,7 @@ namespace HedgehogUtils.Boost.EntityStates
                     SetBrakeState(characterDirection.forward);
                     return;
                 }
-                else if (Vector3.Dot(inputBank.moveVector, characterDirection.forward) < 0.2f)
+                else if (Vector3.Dot(inputBank.moveVector, characterDirection.forward) < 0f)
                 {
                     SetBrakeState(inputBank.moveVector.normalized);
                     return;
@@ -271,9 +271,16 @@ namespace HedgehogUtils.Boost.EntityStates
 
         protected virtual void SetBrakeState(Vector3 endDirection)
         {
-            Brake brake = new Brake();
-            brake.endDirection = endDirection;
-            outer.SetNextState(brake);
+            if (typeof(SkillDefs.IBoostSkill).IsAssignableFrom(base.skillLocator.utility.skillDef.GetType()))
+            {
+                Brake brake = EntityStateCatalog.InstantiateState(((SkillDefs.IBoostSkill)base.skillLocator.utility.skillDef).brakeState.stateType) as Brake;
+                brake.endDirection = endDirection;
+                outer.SetNextState(brake);
+            }
+            else
+            {
+                outer.SetNextStateToMain();
+            }
         }
 
         public override void OnExit()
@@ -321,7 +328,7 @@ namespace HedgehogUtils.Boost.EntityStates
 
         public virtual void OnSkillChanged(GenericSkill skill)
         {
-            if (typeof(BoostEnter).IsAssignableFrom(skill.activationState.stateType))
+            if (typeof(Boost).IsAssignableFrom(skill.activationState.stateType))
             {
                 outer.SetNextState(EntityStateCatalog.InstantiateState(skill.activationState.stateType));
             }

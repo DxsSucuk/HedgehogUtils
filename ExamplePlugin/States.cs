@@ -14,6 +14,7 @@ namespace HedgehogUtils
             Internal.Content.AddEntityState(typeof(SuperSonicTransformation));
             Internal.Content.AddEntityState(typeof(Launch.Launched));
 
+            Internal.Content.AddEntityState(typeof(BoostIdle));
             Internal.Content.AddEntityState(typeof(Brake));
         }
     }

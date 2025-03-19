@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace HedgehogUtils.Boost.EntityStates
 {
-    public class BoostIdle : BaseSkillState
+    public abstract class BoostIdle : BaseSkillState
     {
         protected ICharacterFlightParameterProvider flight;
         public override void OnEnter()
@@ -45,7 +45,7 @@ namespace HedgehogUtils.Boost.EntityStates
 
         public virtual void EnterBoost()
         {
-            outer.SetNextState(EntityStateCatalog.InstantiateState(typeof(Boost)));
+            outer.SetNextState(EntityStateCatalog.InstantiateState(base.skillLocator.utility.skillDef.activationState.stateType));
         }
 
         public virtual void PlayBoostIdleEnterAnimation()

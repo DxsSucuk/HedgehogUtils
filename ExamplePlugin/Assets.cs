@@ -150,7 +150,7 @@ namespace HedgehogUtils
 
         // Use this to create a new boost flash prefab to be used when activating a custom boost skill
         // name: An internal name for the prefab. Doesn't really matter what this is as long as it's not the same as anything else
-        // size: The size of the effect. Power Boost defaults to 1. Super Boost defaults to ---
+        // size: The size of the effect. Power Boost defaults to 1. Super Boost defaults to 1.3
         // alpha: How visible the effect will be. Power Boost defaults to 1.3. Super Boost defaults to 1.6
         // color1: The innermost color of the effect
         // color2: The color between the innermost color and the edge color

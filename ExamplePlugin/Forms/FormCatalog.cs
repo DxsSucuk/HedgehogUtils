@@ -53,12 +53,7 @@ namespace HedgehogUtils.Forms
         // I will make all modded forms require risk of options to sort out controls. Otherwise I'd have to put effort into some kind of form picker ui wheel and that would be mega complicated
         public static void InitializeFormConfigs()
         {
-            KeyCode[] defaultKeys = new KeyCode[10]
-            {
-                KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, KeyCode.Alpha4, KeyCode.Alpha5, KeyCode.Alpha6, KeyCode.Alpha7, KeyCode.Alpha8, KeyCode.Alpha9, KeyCode.Alpha0
-            };
             List<KeyCode> usedKeys = new List<KeyCode>();
-            int count = 0;
             foreach (FormDef form in formsCatalog)
             {
                 if (form.defaultKeyBind != KeyCode.None)
@@ -74,8 +69,6 @@ namespace HedgehogUtils.Forms
                     }
                     continue;
                 }
-                form.keybind = HedgehogUtilsPlugin.instance.Config.Bind<KeyboardShortcut>("Controls", form.ToString() + " Transform Key", new KeyboardShortcut(defaultKeys[count]), "The key you press to transform into the " + form.ToString() + " form. This config is automatically generated.");
-                count = (count + 1) % defaultKeys.Length;
             }
             if (HedgehogUtilsPlugin.riskOfOptionsLoaded)
             {

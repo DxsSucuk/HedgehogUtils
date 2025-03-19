@@ -64,6 +64,8 @@ namespace HedgehogUtils
 
             Buffs.RegisterBuffs();
 
+            Boost.OnHooks.Initialize();
+
             #region Forms
 
             Forms.SuperForm.Items.RegisterItems();

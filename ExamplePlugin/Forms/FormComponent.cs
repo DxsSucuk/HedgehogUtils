@@ -104,7 +104,7 @@ namespace HedgehogUtils.Forms
             targetedForm = null;
             foreach (FormDef form in FormCatalog.formsCatalog)
             {
-                if (Input.GetKeyDown(form.keybind.Value.MainKey))
+                if (!form.keybind.Value.Equals(BepInEx.Configuration.KeyboardShortcut.Empty) && Input.GetKeyDown(form.keybind.Value.MainKey))
                 {
                     targetedForm = form;
                     

@@ -95,7 +95,7 @@ namespace HedgehogUtils.Boost
         private void BoostExists()
         {
             bool prevBoostExists = boostExists;
-            boostExists = typeof(EntityStates.BoostEnter).IsAssignableFrom(body.skillLocator.utility.activationState.stateType);
+            boostExists = typeof(EntityStates.Boost).IsAssignableFrom(body.skillLocator.utility.activationState.stateType);
             if (!prevBoostExists)
             {
                 this.NetworkboostAvailable = true;
