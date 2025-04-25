@@ -69,15 +69,20 @@ namespace HedgehogUtils.Launch
             if (body)
             {
                 radius = Mathf.Max(radius, body.bestFitRadius * 1.5f);
-                
-                vfxObject = UnityEngine.Object.Instantiate(crit ? Assets.launchCritAuraEffect : Assets.launchAuraEffect, base.transform);
-                vfxObject.transform.localScale *= radius;
-                vfxRenderer = vfxObject.transform.Find("Aura").GetComponent<Renderer>();
+
+                VFXAura();
 
                 collider.radius = radius;
             }
             Physics.IgnoreCollision(collider, vehicle.passengerInfo.collider, true);
             PrepareOverlapAttack();
+        }
+
+        protected virtual void VFXAura()
+        {
+            vfxObject = UnityEngine.Object.Instantiate(crit ? Assets.launchCritAuraEffect : Assets.launchAuraEffect, base.transform);
+            vfxObject.transform.localScale *= radius;
+            vfxRenderer = vfxObject.transform.Find("Aura").GetComponent<Renderer>();
         }
 
         public void FixedUpdate()
@@ -169,7 +174,7 @@ namespace HedgehogUtils.Launch
             attack.Fire();
         }
 
-        protected void PrepareOverlapAttack()
+        protected virtual void PrepareOverlapAttack()
         {
             attack = new OverlapAttack();
             ResizeHitBox(2f);
@@ -181,6 +186,7 @@ namespace HedgehogUtils.Launch
             attack.teamIndex = attacker.teamComponent.teamIndex;
             attack.attackerFiltering = AttackerFiltering.NeverHitSelf;
             attack.pushAwayForce = 1500f;
+            attack.hitEffectPrefab = crit ? Assets.launchCritHitEffect : Assets.launchHitEffect;
             attack.impactSound = NetworkSoundEventCatalog.FindNetworkSoundEventIndex("Play_loader_m1_impact");
             attack.addIgnoredHitList(body.healthComponent);
         }

@@ -12,6 +12,7 @@ using LookingGlass.ItemStatsNameSpace;
 using LookingGlass.LookingGlassLanguage;
 using System.Linq;
 using HedgehogUtils.Boost.EntityStates;
+using UnityEngine.UI;
 
 namespace HedgehogUtils.Boost
 {
@@ -21,6 +22,7 @@ namespace HedgehogUtils.Boost
         {
             On.RoR2.GenericSkill.CanApplyAmmoPack += CanApplyAmmoPackToBoost;
             On.RoR2.GenericSkill.ApplyAmmoPack += ApplyAmmoPackToBoost;
+            On.RoR2.UI.HUD.Awake += CreateBoostMeterUI;
         }
 
         private static bool CanApplyAmmoPackToBoost(On.RoR2.GenericSkill.orig_CanApplyAmmoPack orig, GenericSkill self)
@@ -46,6 +48,14 @@ namespace HedgehogUtils.Boost
                     boost.AddBoost(BoostLogic.boostRegenPerBandolier);
                 }
             }
+        }
+
+        public static void CreateBoostMeterUI(On.RoR2.UI.HUD.orig_Awake orig, RoR2.UI.HUD self)
+        {
+            orig.Invoke(self);
+            BoostHUD boostHud = self.gameObject.AddComponent<BoostHUD>();
+            GameObject boostUI = GameObject.Instantiate(Assets.boostHUD, self.transform.Find("MainContainer/MainUIArea/CrosshairCanvas"));
+            boostHud.boostMeter = boostUI;
         }
     }
 }

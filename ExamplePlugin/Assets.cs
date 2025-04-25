@@ -56,17 +56,24 @@ namespace HedgehogUtils
         #region Boost
         internal static GameObject powerBoostFlashEffect;
         internal static GameObject powerBoostAuraEffect;
+
+        public static GameObject boostHUD;
         #endregion
 
         #region Launch
         internal static GameObject launchAuraEffect;
         internal static GameObject launchCritAuraEffect;
+
+        internal static GameObject launchHitEffect;
+        internal static GameObject launchCritHitEffect;
         #endregion
 
         public static void BoostAndLaunch()
         {
             powerBoostFlashEffect = MaterialSwap(Assets.LoadEffect("SonicPowerBoostFlash", true), "RoR2/Base/Common/VFX/matDistortionFaded.mat", "Distortion");
             powerBoostAuraEffect = Assets.LoadAsyncedEffect("SonicPowerBoostAura");
+
+            boostHUD = Assets.mainAssetBundle.LoadAsset<GameObject>("BoostMeter");
 
             #region Launch
             launchAuraEffect = CreateNewBoostAura(HedgehogUtilsPlugin.Prefix + "LAUNCH_AURA_VFX",
@@ -84,6 +91,24 @@ namespace HedgehogUtils
                 new Color(0.8f, 0.1f, 0.2f),
                 new Color(0.3f, 0f, 0f));
             #endregion
+
+            launchHitEffect = CreateLaunchHitEffect("HedgehogUtilsLaunchHitEffect", new Color(1f, 0.8f, 0.4f), new Color(0.8f, 0.8f, 0.8f));
+
+            launchCritHitEffect = CreateLaunchHitEffect("HedgehogUtilsLaunchCritHitEffect", new Color(1f, 0.1f, 0.2f), new Color(0.9f, 0.7f, 0.7f));
+        }
+
+        private static GameObject CreateLaunchHitEffect(string name, Color ringColor, Color beamColor)
+        {
+            GameObject hitEffect = PrefabAPI.InstantiateClone(Addressables.LoadAssetAsync<GameObject>("RoR2/Base/ArmorReductionOnHit/PulverizedEffect.prefab").WaitForCompletion(), name);
+            GameObject.Destroy(hitEffect.GetComponent<ParticleSystem>());
+            ParticleSystem.MainModule ring = hitEffect.transform.Find("Ring").gameObject.GetComponent<ParticleSystem>().main;
+            ring.startColor = ringColor;
+            ParticleSystem.MainModule beam = hitEffect.transform.Find("Beams").gameObject.GetComponent<ParticleSystem>().main;
+            beam.startColor = beamColor;
+            GameObject.Destroy(hitEffect.transform.Find("Mesh").gameObject);
+            GameObject.Destroy(hitEffect.transform.Find("Point Light").gameObject);
+            AddNewEffectDef(hitEffect, "");
+            return hitEffect;
         }
 
         #region Super Form

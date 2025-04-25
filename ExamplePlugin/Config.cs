@@ -46,6 +46,21 @@ namespace HedgehogUtils
         {
             return HedgehogUtilsPlugin.instance.Config.Bind<FormItemSharing>("Chaos Emeralds", "Item Sharing", FormItemSharing.All, "Handles how Chaos Emeralds are shared between teammates and determines who has permission to transform based on the items they have. The restrictions only apply to the first person to transform and don't apply to anyone who transforms in the 10 second window afterwards. Host's config takes priority. Default is All.\n\nAssuming all items have been collected across the team...\nAll: Anyone, whether they HAVE ANY ITEMS OR NOT, can transform.\nContributor: Players that have AT LEAST ONE of the needed items can transform\nMajorityRule: The player(s) with the MAJORITY number of the needed items can transform\nNone: Only the player with ALL items can transform\n\nWARNING: A mod that lets you drop items to your teammates is reccommended if you are changing this setting. Otherwise, transforming may be impossible if items are split between players in certain ways.");
         }
+
+        public static ConfigEntry<bool> LaunchBodyBlacklist()
+        {
+            return HedgehogUtilsPlugin.instance.Config.Bind<bool>("Launch", "Use Body Blacklist", true, "Determines whether certain characters, such as final bosses and worms, are impossible to be launched. Host's config takes priority. Default is true.");
+        }
+
+        public static ConfigEntry<float> BoostMeterLocationX()
+        {
+            return HedgehogUtilsPlugin.instance.Config.Bind<float>("Boost", "X Location", 90f, "X Coordinate of the boost meter's location relative to the crosshair. Default is 90.");
+        }
+
+        public static ConfigEntry<float> BoostMeterLocationY()
+        {
+            return HedgehogUtilsPlugin.instance.Config.Bind<float>("Boost", "Y Location", -50f, "Y Coordinate of the boost meter's location relative to the crosshair. Default is -50.");
+        }
         #endregion
 
         #region Risk Of Options
@@ -70,6 +85,13 @@ namespace HedgehogUtils
             ModSettingsManager.AddOption(new CheckBoxOption(Config.AnnounceSuperTransformation()));
 
             ModSettingsManager.AddOption(new CheckBoxOption(Config.EnableLogs()));
+
+            ModSettingsManager.AddOption(new CheckBoxOption(Config.LaunchBodyBlacklist()));
+
+            float minLocation = -500;
+            float maxLocation = 500;
+            ModSettingsManager.AddOption(new SliderOption(BoostMeterLocationX(), new RiskOfOptions.OptionConfigs.SliderConfig() { min = minLocation, max = maxLocation, formatString = "{0:0}" }));
+            ModSettingsManager.AddOption(new SliderOption(BoostMeterLocationY(), new RiskOfOptions.OptionConfigs.SliderConfig() { min = minLocation, max = maxLocation, formatString = "{0:0}" }));
 
         }
         #endregion

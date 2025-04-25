@@ -191,6 +191,15 @@ namespace HedgehogUtils.Boost.EntityStates
             }
         }
 
+        public override void UpdateAnimationParameters()
+        {
+            base.UpdateAnimationParameters();
+            if (this.characterAnimParamAvailability.isMoving)
+            {
+                this.modelAnimator.SetBool(AnimationParameters.isMoving, true);
+            }
+        }
+
 
         protected virtual void CreateBoostVFX()
         {

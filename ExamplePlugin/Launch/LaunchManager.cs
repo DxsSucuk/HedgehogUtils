@@ -16,13 +16,13 @@ namespace HedgehogUtils.Launch
     {
         public static GameObject launchProjectilePrefab;
         
-        public static string[] bodyBlacklist = { "BrotherBody", "BrotherGlassBody", "BrotherHurtBody", "FalseSonBossBody", "MagmaWormBody", "ElectricWormBody", "ShopkeeperBody", "MiniVoidRaidCrabBodyBase", "MiniVoidRaidCrabBodyPhase1", "MiniVoidRaidCrabBodyPhase2", "MiniVoidRaidCrabBodyPhase3", "ScorchlingBody" };
+        public static string[] bodyBlacklist = { "BrotherBody", "BrotherGlassBody", "BrotherHurtBody", "FalseSonBossBody", "FalseSonBossBodyBrokenLunarShard", "FalseSonBossBodyLunarShard", "MagmaWormBody", "ElectricWormBody", "ShopkeeperBody", "MiniVoidRaidCrabBodyBase", "MiniVoidRaidCrabBodyPhase1", "MiniVoidRaidCrabBodyPhase2", "MiniVoidRaidCrabBodyPhase3", "ScorchlingBody" };
 
         public const float launchSpeed = 55f;
 
         public static void Launch(CharacterBody target, CharacterBody attacker, Vector3 direction, float damage, bool crit, float speed, float procCoefficient)
         {
-            if (bodyBlacklist.Contains(target.name)) { return; }
+            if (Config.LaunchBodyBlacklist().Value && bodyBlacklist.Contains(BodyCatalog.GetBodyName(target.bodyIndex))) { return; }
             EntityStateMachine bodyState = EntityStateMachine.FindByCustomName(target.gameObject, "Body");
             if (bodyState && !bodyState.CanInterruptState(InterruptPriority.Vehicle)) { return; }
 
@@ -33,8 +33,8 @@ namespace HedgehogUtils.Launch
                     if (existingController.age > 0.3f)
                     {
                         existingController.Restart(attacker, direction, damage, crit, speed, procCoefficient);
-                        return;
                     }
+                    return;
                 }
             }
 

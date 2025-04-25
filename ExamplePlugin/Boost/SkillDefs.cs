@@ -15,12 +15,15 @@ namespace HedgehogUtils.Boost
         {
             public SerializableEntityStateType boostIdleState { get; set; }
             public SerializableEntityStateType brakeState { get; set; }
+            public Color boostHUDColor { get; set; }
         }
-        
+
         public class BoostSkillDef : SkillDef, IBoostSkill
         {
             public SerializableEntityStateType boostIdleState { get; set; }
             public SerializableEntityStateType brakeState { get; set; }
+
+            public Color boostHUDColor { get; set; }
 
             public override EntityState InstantiateNextState([NotNull] GenericSkill skillSlot)
             {
@@ -87,6 +90,7 @@ namespace HedgehogUtils.Boost
         {
             public SerializableEntityStateType boostIdleState { get; set; }
             public SerializableEntityStateType brakeState { get; set; }
+            public Color boostHUDColor { get; set; }
 
             public override EntityState InstantiateNextState([NotNull] GenericSkill skillSlot)
             {
